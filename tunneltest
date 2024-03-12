@@ -1,0 +1,53 @@
+#include <opencv2/opencv.hpp>
+
+using namespace std;
+using namespace cv;
+
+int main() {
+    Mat image = imread("C:\\Users\\kelly\\Downloads\\tunneltest2.jpg");
+
+    if (image.empty()) {
+        std::cerr << "Could not open or find the image!" << std::endl;
+        return -1;
+    }
+
+    Mat hsvImage;
+    cvtColor(image, hsvImage, COLOR_BGR2HSV);
+
+    Scalar lowerRed = Scalar(20, 50, 50);
+    Scalar upperRed = Scalar(30, 255, 255);
+
+    Mat redMask;
+    inRange(hsvImage, lowerRed, upperRed, redMask);
+
+    threshold(redMask, redMask, 50, 255, THRESH_BINARY);
+
+    Mat redEdges;
+    Canny(redMask, redEdges, 150, 200, 3);
+
+    vector<vector<Point>> contours; 
+    findContours(redEdges, contours, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE);
+
+    int triangleCount = 0;
+    int detect = 0;
+
+    for (const auto& contour : contours) {
+        vector<Point> approx;
+        approxPolyDP(contour, approx, arcLength(contour, true) * 0.02, true);
+
+        if (approx.size() == 3) {
+            triangleCount++;
+            detect = 1;
+        }
+    }
+
+    cout << "Triangle Count: " << triangleCount << endl;
+
+    imshow("Red Mask", redMask);
+    imshow("Red Edges", redEdges);
+
+    waitKey(0);
+    destroyAllWindows();
+
+    return 0;
+}

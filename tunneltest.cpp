@@ -12,9 +12,9 @@ int main()
     double epsilon = 6;        // DP Algorithm 的參數
     int minContour = 3;        // 邊數小於 minContour 會被遮罩
     int maxContour = 6;        // 邊數大於 maxContour
-    double lowerBondArea = 10; // 面積低於 lowerBondArea 的輪廓會被遮罩
+    double lowerBondArea = 20; // 面積低於 lowerBondArea 的輪廓會被遮罩
 
-    Mat image = imread(PATH);
+    Mat image = imread(PATH1);
 
     if (image.empty())
     {
@@ -26,19 +26,19 @@ int main()
     cvtColor(image, hsvImage, COLOR_BGR2HSV);
 
     // PATH
-    int hue_m = 0;
-    int hue_M = 179;
-    int sat_m = 207;
-    int sat_M = 246;
-    int val_m = 143;
-    int val_M = 248;
-    // PATH1
-    // int hue_m = 49;
+    // int hue_m = 0;
     // int hue_M = 179;
-    // int sat_m = 94;
-    // int sat_M = 255;
-    // int val_m = 230;
-    // int val_M = 255;
+    // int sat_m = 207;
+    // int sat_M = 246;
+    // int val_m = 143;
+    // int val_M = 248;
+    // PATH1
+    int hue_m = 49;
+    int hue_M = 179;
+    int sat_m = 94;
+    int sat_M = 255;
+    int val_m = 230;
+    int val_M = 255;
     Scalar lowerRed = Scalar(hue_m, sat_m, val_m);
     Scalar upperRed = Scalar(hue_M, sat_M, val_M);
 
@@ -106,6 +106,7 @@ int main()
     for (size_t i = 0; i < contours2.size(); i++)
     {
         approxPolyDP(Mat(contours2[i]), polyContours2[i], epsilon, true);
+        cout << polyContours2[i].size() << endl;
         if (polyContours2[i].size() == 3)
         {
             triangleCount++;
